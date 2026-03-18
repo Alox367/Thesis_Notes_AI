@@ -1,0 +1,265 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+
+\title{Machine Learning}
+\author{Alessio Virgillito}
+\date{March 2026}
+\usepackage[italian]{babel}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section{Preambolo}
+Il seguente documento è stato prodotto con lo scopo di introdurre i concetti basilari della disciplina Machine Learning, Artificial Intelligence e vari aspetti legati a questa materia. Lo scopo dei seguenti appunti è puramente didattico e mirato alla costruzione di una Tesi Sperimentale di Primo Livello (Laurea Triennale in Informatica). L'argomento della Tesi mira all'impiego di soluzioni tramite ML, DL (Deep Learning), LLM (Large Language Model) e AI al mondo giuridico, della sentenza e delle scelte di un giudice artificiale su un caso reale. Per questo motivo gli esempi introdotti sono tutti legati a questo argomento.
+
+\section{Introduzione al Machine Learning}
+Il Machine Learning, o apprendimento automatico, è una branca dell'Intelligenza Artificiale che permette ai computer di imparare dai dati invece di seguire istruzioni rigide pre-programmate. Come vedremo, invece che scrivere milioni di righe di codice per ogni possibile scenario, si addestra un \textbf{modello} che individua autonomamente \textit{schemi e regole} nei dati per fare previsioni o prendere decisioni.
+
+
+
+
+\subsection{ML vs Programmazione Tradizionale}
+Se dovessimo pensare alla costruzione di un programma che risolva un problema, nella Programmazione Tradizionale, questo verrebbe affrontato in un modo semplice.
+\begin{itemize}
+    \item Dati e regole in input $\rightarrow$ Risposte in Output.
+
+\end{itemize}
+Dunque il programmatore scrive codice per ottenere ciò che desidera in output. Tuttavia, cosa accadrebbe se ciò che vogliamo analizzare ha molteplici vie?
+Se ad esempio volessimo scrivere un programma che analizzi delle casistiche legali:
+\textit{"SE il danno è sotto i 500 euro E il contratto non è stato firmato, ALLORA il risarcimento è negato."}
+Dovremmo scrivere un codice infinito che, oltre a non rispettare una buona norma di programmazione, rischia quasi sempre di lasciare alcuni buchi (nel caso dell'esempio, sarebbe impossibile prevedere tutte le casistiche legali). 
+Notiamo subito che il rischio in applicazioni reali è molto grande.\\
+Con il Machine Learning, che in molte occasioni abbrevieremo come ML, il processo visto con la programmazione tradizionale è completamente opposto. Infatti, nel ML, diamo in pasto al sistema migliaia di \textbf{Dati} (ad esempio migliaia di cause passate) e le \textbf{Risposte} (nell'esempio di prima le sentenze dei giudici veri). Il sistema allora si "studia" i casi e capisce da solo quali sono le regole e i pattern che portano a una certa sentenza. Dunque:
+\begin{itemize}
+    \item Dati e Risposte in input $\rightarrow$ Regole (il modello) in Output
+\end{itemize}
+
+
+\subsection{La formula magica}
+Alla base di tutto il Machine Learning, c'è il tentativo di trovare una funzione matematica, che chiamiamo $f$, in grado di trasformare un input in un output. 
+\begin{itemize}
+    \item $x$ = $Input$ (chiamati anche \textit{Features} o \textit{caratteristiche}). Nell'esempio giuridico potrebbero essere i testi delle denunce, le prove, gli articoli di legge citati.
+
+    \item $y$ = $Output$ (chiamata anche \textit{Label} o \textit{etichetta}. Nell'esempio giuridico, è la decisione del giudice.
+    Es. "Colpevole/Innocente" oppure "Risarcimento accordato/negato".
+\end{itemize}
+    L'obiettivo del ML è \textbf{addestrare} un modello per trovare la migliore funzione $f$ possibile, in modo che quando gli verrà data un nuovo dato $x$ in input  (una nuova causa ad esempio), \textit{mai vista prima}, lui saprà prevedere un output $y$ estremamente accurato.
+
+
+\subsection{Il ciclo di apprendimento della Macchina}
+Abbiamo compreso che la Macchina adesso diventa intelligente, cercando di non dare Risposte, ma usandole per fornire il modello matematico iniziale. Se dunque alla macchina dobbiamo dare in pasto dei dati in Input, essa come fa a sfruttarli per imparare? Come trova questa famosa funzione $f$? Non è di certo magica e ricordiamo che non è cosciente (avremmo allora risolto tutto il lavoro)!. La macchina \textbf{procede a tentativi ed errori}, in un ciclo continuo.\\
+In modo estremamente semplificato potremmo suddividere il ciclo di apprendimento della macchina in 4 fasi:
+\begin{enumerate}
+    \item Previsione: La macchina prende un input $x$, tira a indovinare e produce una sua risposta.
+
+    \item Calcolo dell'errore (Loss Function): Il sistema confronta la sua risposta con la risposta reale (ad esempio la sentenza reale del giudice) e calcola \textit{quanto ha sbagliato}. Questa misurazione si chiama \textit{Funzione di costo } o \textit{Loss Function}
+
+    \item Aggiornamento (Ottimizzazione): Usando la matematica (nello specifico, un algoritmo chiamato \textit{Gradient Descent}), il modello aggiusta i suoi ingranaggi interni ("i pesi") per far si che, al tentativo successivo, l'errore sia un po' più piccolo.
+
+    \item Il ciclo si ripete migliaia o milioni di volte finché l'errore non diventa piccolissimo. A quel punto, diciamo che il modello è \textbf{addestrato}.
+\end{enumerate}
+Come facciamo impararare la macchina allora?
+
+\subsection{Le famiglie di apprendimento nel ML}
+Esistono tre modi principali per far imparare la macchina:
+\begin{itemize}
+    \item Apprendimento Supervisionato (\textbf{Supervised Learning}): è quello che abbiamo già descritto. Alla macchina diamo dati con le risposte già pronte (etichettate). È il metodo che, nel caso di un confronto con dataset già disponibili, risulta più utile. (es. Il caso giudiziario).
+
+    \item Apprendimento NON Supervisionato (\textbf{Unsupervised Learning}): Diamo alla macchina tanti dati senza risposte. Le chiediamo: "Trovami dei gruppi o dei pattern logici". Nell'esempio giuridicio, raggruppare cause civili simili tra loro senza sapere a priori di cosa parlano.
+
+    \item Apprendimento per Rinforzo (\textbf{Reinforcement Learning}): La macchina impara interagendo con un ambiente, ricevendo un \textit{premio} se fa bene e una \textit{punizione} se sbaglia (è usato molto per i videogiochi o per addestrare i robot a camminare).
+\end{itemize}
+
+
+
+\section{I Compiti dell'Apprendimento Supervisionato}
+Come già annunciato nel preambolo, questo tipo di apprendimento è una tecnica di ML in cui i modelli vengono addestrati utilizzando dataset etichettati, composti da coppie di input e output desiderato. L'algoritmo impara a mappare gli input alle risposte corrette, permettendogli di prevedere risultati su nuovi dati non visti. Vedremo che i compiti principali sono \textit{\textbf{classificazione}}(categorie) e \textit{\textbf{regressione}} (valori continui), a seconda di come è fatta la Risposta $y$ che abbiamo citato nel cap. 1.2\\
+Dunque tutto ruota intorno al dataset, con coppie di dati: Input $x$ \textit{feature} e un output $y$ \textit{label}.
+Rimanendo sempre sull'esempio del caso giuridico, la \textit{feature o $x$} è \textbf{tutto l'insieme dei documenti della causa}, mentre la \textit{label o $y$} è \textbf{la decisione finale} presa storicamente dal giudice.
+
+\subsection{La Classificazione - Prevedere una Categoria}
+Usiamo la Classificazione quando la risposta che cerchiamo ($y$) è una categoria precisa, un'etichetta. Non ci sono vie di mezzo. L'algoritmo traccia dei "confini" matematici per separare i casi.
+La classificazione si divide a sua volta in:
+\begin{itemize}
+\item \textbf{Classificazione Binaria}: Ci sono solo due opzioni possibili, solitamente indicate con $0$ e $1$. Banalmente nel nostro esempio ormai avviato, l'IA legge il ricorso e deve dire $0$ (Respinto) oppure $1$ (Accolto). Un algoritmo classico per fare questo si chiama \textit{Regressione Logistica} (N.B. Non ha a che fare con La Regressione che vedremo dopo, serve per classificare!). Questo algoritmo calcola la probabilità da $0\%$ a $100\%$ che un ricorso, nel nostro es., venga accolto.
+
+\item \textbf{Classificazione Multiclasse}: Ci sono più di due opzioni. Ad esempio, potremmo voler addestrare l'IA a leggere una sentenza e categorizzarla in: 1 (Diritto di Famiglia), 2 (Diritto del Lavoro), 3 (Diritto Societario).
+
+\end{itemize}
+
+\subsection{La Regressione - Prevedere un Numero}
+La regressione, tecnica di apprendimento supervisionata come abbiamo visto, modella la relazione tra \textit{feature di input} e una variabile \textit{target \textbf{continua}}, utilizzando metodi statistici per prevedere la variabile target sulla base di nuovi dati di input. I modelli di regressione esaminano un gran numero di variabili, identificando quelle che hanno il maggiore impatto sui risultati. La regressione è fondamentale per il Machine Learning, soprattutto per i casi d'uso \textbf{\textit{predittivi}}. Adattando un modello di regressione ai dati, possono essere sostituite congetture e intuizioni sui fattori che guideranno i risultati e i comportamenti \textbf{futuri}.
+L'algoritmo non divide i dati in recinti, ma cerca di tracciare una linea che segua l'andamento dei dati per fare una stima quantitativa.
+Infatti, usiamo la Regressione quando la risposta che cerchiamo $y$ non è una categoria, ma un \textbf{numero continuo}, un valore reale.\\
+Vediamo un esempio: Immaginiamo che un' IA \textit{giudicante} abbia deciso che l'imputato è colpevole (usando la classificazione). Ora deve decidere quanto deve pagare. L'ammontare esatto del risarcimento in euro è un numero continuo, potrebbe essere un numero in un range (ad esempio 100€, 540€ o 10.000€). Per fare questa stima si usano algoritmi come la \textit{Regressione Lineare}.
+
+\subsection{La Regressione Lineare}
+In \textbf{Statistica}, la Regressione Lineare ha il compito di trovare quella retta che cerca di spiegare, nel miglior modo possibile, tutti i dati.
+Sappiamo che, \textit{in Statistica}, la formula della regressione é:\\ \centerline{$y = mx+q$}
+\begin{itemize}
+    \item $y$ è la variabile indipendente;
+
+    \item $x$ la variabile dipendente;
+
+    \item $m$ è la pendenza (coefficiente angolare);
+
+    \item $q$ è l'intercetta.
+\end{itemize}
+E' un modello che ci permette di fare previsioni.\\
+\\
+In \textbf{Machine Learning}, la formula di regressione lineare si scrive così:\\
+\centerline{$y = w_1 x_1 + w_2x_2+...+w_nx_n + q$}
+
+\begin{itemize}
+    \item $y$ (La previsione): E' il valore continuo che vogliamo indovinare. Nel contesto giuridico ad esempio, potrebbe essere la stima esatta in euro di un risarcimento danni.
+
+    \item $x_1,x_2,...,x_n$ (Le feature): Sono le variabili indipendenti (gli input). In una causa civile potrebbero essere: i giorni di prognosi medica, il reddito della vittima, la percentuale di colpa, ecc.
+
+    \item $w_1,w_2,...,w_m$ (I pesi - weights): In statistica erano i coeff. angolari. Nel ML, i pesi indicano \textbf{\textit{"l'importanza"}} che il modello dà a ciascuna feature. Se i giorni di prognosi sono fondamentali per calcolare il danno, il loro peso \textbf{\textit{w}} sarà molto alto.
+
+    \item $q$ (il Bias): In statistica era l'intercetta. E' il valore di base della previsione quando tutti gli input \textit{$x$} sono zero.
+\end{itemize}
+Dunque la differenza tra Statistica e ML nel campo della Regressione Lineare sta nel fatto che, in Statistica, per trovare la retta migliore, si usa una formula "chiusa" ed esatta (es. \textit{Metodo dei Minimi Quadrati)} che calcola i coefficienti in un colpo solo.\\
+Nel ML, quando si ha a che fare con dataset giganteschi, calcolare la formula esatta diventa computazionalmente impossibile per il computer. Quindi, l'IA parte con pesi $w$ e bias $q$ (o $b$) \textbf{scelti a caso}, guarda l'errore che commette, e li "aggiusta" passo dopo passo in \textbf{modo iterativo.}
+
+
+\section{L'addestramento e l'Ottimizzazione del Modello}
+L'addestramento è il processo iterativo attraverso cui il modello impara a mappare gli input $x$ negli output corretti $y$. Affinché questo avvenga, il sistema ha bisogno di due componenti fondamentali: una metrica per capire quanto sta sbagliando e un meccanismo per corregere i propri errori.
+
+\subsection{Loss Function}
+La funzione di Costo (o Perdita) calcola la \textbf{distanza matematica} tra la previsione del modello (che chiameremo $\hat{y}$) e la risposta (ad es. quella del giudice, che chiameremo $y$). Più questo valore è alto, peggio sta lavorando il modello!\\
+A seconda del compito (visto nel Cap.2), si usano funzioni differenti:
+\begin{itemize}
+    \item Per la \textbf{Regressione}: Si utilizza comunemente l'Errore Quadratico Medio (\textit{MSE - Mean Squared Error}). Penalizza enormemente gli errori grandi elevandoli al quadrato:\\
+    \\
+    \centerline{$MSE = \frac{1}{n} \sum_{i=1}^{n}(y_i-\hat{y_i})^2$}\\
+
+dove $n$ è il numero di casi considerati.\\
+
+\item Per la \textbf{Classificazione Binaria}: Si usa la \textit{Log Loss} (o \textit{Binary Cross-Entropy}), che lavora sulle probabilità. Penalizza duramente il modello se è "molto sicuro" di una decisione che in realtà è sbagliata.
+
+
+\end{itemize}
+
+\subsection{La Discesa del Gradiente {(Gradient Descent)}}
+Una volta calcolato l'errore, come facciamo a modificarlo? Entra in gioco l'algoritmo di ottimizzazione più importante del Machine Learning: \textbf{\textit{La Discesa del Gradiente}}.
+La discesa del gradiente è una tecnica matematica che trova in modo \textit{iterativo} i pesi e il bias che producono il modello con la perdita più bassa. La discesa del gradiente trova il peso e il bias migliori ripetendo la seguente procedura per un numero di iterazioni definite dall'utente.\\
+Il modello inizia l'addestramento con pesi e bias casuali vicini allo zero e poi ripete i seguenti passaggi: \\
+\begin{enumerate}
+    \item Calcola la perdita con il peso e il bias attuali.
+
+    \item Determina la direzione in cui spostare i pesi e il bias che riducono la perdita.
+
+    \item Sposta i valori di peso e bias di una piccola quantità nella direzione che riduce la perdita.
+
+    \item Torna al passaggio 1 e ripeti la procedura finché il modello non riesce a ridurre ulteriormente la perdita.
+\end{enumerate}
+In altre parole, immaginiamo la Funzione di Costo come una catena montuosa. L'obiettivo dell'algoritmo è scendere a valle, fino a trovare il punto più basso in assoluto (\textit{il minimo globale}), dove l'errore è vicino a zero. Dunque si calcola il gradiente (la derivata prima) della funzione di costo rispetto a ciascun peso $w$. Il gradiente indica, come detto, la direzione della pendenza massima in salita; l'algoritmo, perciò, aggiorna i pesi muovendosi nella direzione opposta. \\
+La formula di aggiornamento di un singolo peso é: \\
+\\
+\centerline{$w_{nuovo} = w_{vecchio} - \eta \cdot \nabla L$}
+dove:
+\begin{itemize}
+    \item $\nabla L$ è il gradiente calcolato.
+
+    \item $\eta$ è il \textbf{\textit{Learning Rate}} (Tasso di Apprendimento). Rappresenta la grandezza del "passo" che il modello fa verso il basso.Se $\eta$ è troppo grande, il modello rischia di saltare da una parte all'altra della valle senza mai scendere; se è troppo piccolo, ci metterà un'infinità di tempo ad addestrarsi.
+\end{itemize}
+
+\subsection{Overfitting e Underfitting}
+Il vero scopo del Machine Learning non è avere un errore nullo sui dati di addestramento, ma saper generalizzare su casi mai visti. Qui risiedono i due problemi principali:
+\begin{itemize}
+    \item \textbf{Underfitting}: Il modello è troppo rigido e non riesce a catturare la logica sottostante ai dati (come una retta che cerca di approssimare una curva complessa).
+
+    \item \textbf{Overfitting}: Il modello si adatta in modo così maniacale ai dati di addestramento da impararne a memoria anche il rumore e i dettagli irrilevanti. Di conseguenza, nell'esempio giuridico, fallisce quando deve giudicare una sentenza nuova.
+
+\end{itemize}
+Un modello dunque deve fare buone previsioni su dati \textit{nuovi}. In altre parole, si vuole creare un modello che \textit{si adatti} ai nuovi dati. Un modello \textbf{overfit} fa previsioni eccellenti sul set di addestramento, ma previsioni scarse sui nuovi dati. Un \textbf{modello sottoadattato} non fa nemmeno buone previsioni sui dati di addestramento. Per fare un esempio reale, se un modello overfit è come un prodotto che funziona bene in laboratorio, ma male nel mondo reale, un modello underfit è come un prodotto che \textit{non funziona bene nemmeno in laboratorio}.
+\\
+Come detto all'inizio del sotto-capitolo, l'obiettivo è creare un modello che si generalizzi bene ai nuovi dati. Dunque la \textbf{generalizzazione} è l'opposto dell'overfitting.
+
+\subsection{Condizioni di generalizzazione}
+Un modello viene addestrato su un set di addestramento (che vedremo dopo), ma il vero test del suo valore è la sua capacità di fare previoni su nuovi esempi, in particolare su dati reali. Durante lo sviluppo di un modello, il set di test funge da sostituto dei dati reali. L'addestramento di un modello che generalizza bene implica le seguenti condizioni del set di dati:
+\\
+\begin{itemize}
+    \item Gli esempi devono essere \textbf{distribuiti in modo indipendente e identico}, che è un modo elegante per dire che i tuoi esempi non possono influenzarsi a vicenda.
+
+    \item Il set di dati è \textbf{stazionario}, il che significa che non cambia in modo significativo nel tempo.
+
+    \item Le partizioni del set di dati hanno la stessa distribuzione. In altre parole, gli esempi nel set di addestramento sono statisticamente simili agli esempi nel set di convalida, nel set di test e nei dati reali.
+\end{itemize}
+
+
+
+\subsection{Suddivisione del Dataset}
+Per combattere l'overfitting e simulare la realtà, il dataset originale di sentenze \textbf{non viene mai fornito al modello tutto insieme}, ma viene suddiviso rigorosamente in tre porzioni:\\
+\begin{enumerate}
+    \item \textbf{Training Set} (circa 70-80\%): I dati su cui il modello si allena calcolando i gradienti e aggiornando i pesi.
+
+    \item \textbf{Validation Set} (circa 10-15\%): Un set di dati usato durante l'addestramento per valutare temporaneamente il modello e calibrare iperparametri come il \textit{Learning Rate} $\eta$.
+
+    \item \textbf{Test Set} (circa 10-15\%): I dati finali, completamente invisibili al modello fino alla fine del progetto. Su questi dati si calcolano le metriche di successo da riportare nella tesi.
+\end{enumerate}
+
+\section{Valutazione del Modello e Metriche di Successo}
+Una volta che il modello ha terminato la fase di addestramento, è necessario misurarne le reali capacità di generalizzazione utilizzando il \textbf{Test Set} (dati mai visti prima del modello). Le metriche di valutazione cambiano radicalmente a seconda che si stia risolvendo un problema di Classificazione o di Regressione.
+
+\subsection{Valutare i modelli di Classificazione}
+Quando l'obiettivo è prevedere una categoria (Classificazione Binaria o Multiclasse), lo strumento fondamentale è la \textbf{Matrice di Confusione (\textit{Confusion Matrix}}). E' una tabella che incrocia le previsioni del modello con le etichette reali (\textit{la Ground Truth}).\\
+Nel caso base (due classi: Positiva e Negativa), la matrice evidenzia quattro casistiche: \\
+\\
+Nota Bene\footnote{Esempio Classico: \textbf{Filtro Anti-Spam: }Se addestri un'IA a bloccare lo spam, l'obiettivo dell'IA è "trovare lo spam". Quindi la Classe Positiva (1) è "L'email è Spam" (anche se lo spam è una cosa fastidiosa!), mentre la Classe Negativa (0) è "L'email è normale".}: \textit{Classe Positiva} = La caratteristica che il modello sta \textbf{attivamente cercando di rilevare}. L'oggetto principale della nostra ricerca. [spesso indicata con $1$] \\
+    \textit{Classe Negativa} = E' l'assenza di quell'evento, ovvero lo stato di "normalità", di default o il resto dei casi. [spesso indicata con $0$]
+\\
+\begin{itemize}
+    \item \textbf{Veri Positivi (TP) e Veri Negativi (TN):} Le previsioni corrette.
+
+    \item \textbf{Falsi Positivi (FP - Errore di Tipo 1}: Il modello prevede la classe Positiva, ma il valore reale é negativo.
+
+    \item \textbf{Falsi Negativi (FN - Errore di Tipo 2}: Il modello prevede la classe Negativa, ma il valore reale é Positivo.
+\end{itemize}
+Da questi quattro valori derivano le metriche standard:\\
+\begin{enumerate}
+    \item \textbf{Accuratezza (Accuracy)}: La percentuale di previsioni corrette sul totale. E' utile solo se le classi nel dataset sono bilanciate (es. 50\% positivi, 50\% negativi). \\
+
+    \centerline{$Accuracy = \frac{TP +TN}{TP+TN+FP+FN}$}
+    
+\item \textbf{Precisione (Precision)}: La proporzione di previsioni positive che erano effettivamente corrette. Risponde alla domanda: "\textit{Di tutti i casi etichettati come positivi dal modello, quanti lo sono davvero?"}.\\
+
+\centerline{$Precision = \frac{TP}{TP+FP}$}
+
+\item \textbf{Richiamo (Recall)}: La proporzione di casi positivi reali che il modello è riuscito a identificare correttamente.
+\\
+\centerline{$Recall = \frac{TP}{TP+FN}$}
+
+\end{enumerate}
+
+\subsection{Valutare i modelli di Regressione}
+Se invece il modello deve prevedere un valore continuo (Regressione), non possiamo usare \textit{"giusto o sbagliato"}, perché indovinare un numero con infiniti decimali è impossibile. Dobbiamo misurare quanto la previsione si discosta dal valore reale.\\
+\\
+\\
+\\
+\\
+\\
+Le metriche principali in questo ambito sono: \\
+
+\begin{enumerate}
+    \item \textbf{MAE (Mean Absolute Error - Errore Assoluto Medio)}: E' lamedia delle differenze tra le previsioni e i valori veri. E' facile da interpretare (se, come detto prima, vogliamo prevedere prezzi in euro (es. un risarcimento), il MAE fornisce l'errore medio in euro).\\
+    \\
+    \centerline{$MAE = \frac{1}{n}\sum_{i=1}^{n} |y_i - \hat{y_i}|$} \\
+
+\item \textbf{RMSE (Root Mean Squared Error - Radice dell'Errore quadratico medio)}: Estrae la radice quadrata del MSE (che è stato visto nel Cap. 3). Poiché eleva gli errori al quadrato prima di farne la media, penalizza in modo molto severo gli errori grandi.\\
+\\
+\centerline{$RMSE = \sqrt{\frac{1}{n} \sum_{i=1}^{n}(y_i-\hat{y_i})^2}$}
+\\
+\item \textbf{Coefficiente di Determinazione ($R^2$)}\footnote{In Statistica $R^2 = \rho^2$ si calcola trovando prima $\rho = \frac{Cov(X,Y)}{Var(x)Var(y)}$ , dove $\rho$ è il \textit{coefficiente di correlazione tra due variabili aleatorie.}}: E' una metrica statistica che, in \%, ci dice quanto i dati spiegano il modello. Indica la proporzione della varianza nella variabile dipendente ($y$) che è predicibile dalle variabili indipendenti ($x$). Un $R^2=1$ indica previsioni perfette, riusciamo a spiegare il 100\% (modello perfetto).
+
+\end{enumerate}
+
+
+
+
+\end{document}
