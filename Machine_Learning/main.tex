@@ -6,6 +6,7 @@
 \date{March 2026}
 \usepackage[italian]{babel}
 
+
 \begin{document}
 
 \maketitle
@@ -259,7 +260,70 @@ Le metriche principali in questo ambito sono: \\
 
 \end{enumerate}
 
+\section{La Data Pipeline (Dal mondo reale al modello)}
+Potremmo avere l'algoritmo migliore del mondo ma non poterci fare nulla se gli diamo in pasto spazzatura! (Principio \textit{Garbage IN/OUT}). La \textbf{Data Pipeline} è quell'infrastruttura software che prende i dati grezzi del mondo reale, li pulisce, li trasforma e li impacchetta nel formato matematico perfetto per il modello.
+\\
+Nel Machine Learning applicato, specialmente nel campo del NLP (Natural Language Processing) e dell'analisi giuridica, i dati non si presentano quasi mai in tabelle ordinate e pronte all'uso. Il processi di acquisizione, pulizia e strutturazione prende il nome di \textbf{Data Pipeline} e rappresenta solitamente l'80\& del lavoro di un Data Scientist.
 
+\subsection{Data Collection}
+Il primo passo è ovviamente acquisire i dati, ottenere la materia prima. Nel nostro esempio, potremmo considerare una banca dati pubblica delle sentenze di diritto civile\footnote{La banca dati gratuita "Diritto Pratico" fornisce una raccolta di \textbf{sentenze anonimizzate} autoalimentata dagli utenti, spesso Avvocati.} come il dataset da cui estrapolare dati. Per estrarre questi dati in modo massivo (non facendo copia-incolla manuale), si possono utilizzare due tecniche:
+\\
+\begin{itemize}
+    \item Le \textbf{API (\textit{Application Programming Interface})}: Se la piattaforma lo permette (come nel caso della banca dati "Diritto Pratico"), si scrive un codice Python che dialoga con il server e scarica intere raccolte di provvedimenti.
 
+    \item \textbf{Web Scraping:} Se le API non sono disponibili, si utilizzano librerie Python (come BeautifulSouop o Selenium) per \textit{navigare} automaticamente le pagine web ed estrarne il testo. Durante questa fase è essenziale usare criteri di ricerca mirati. Piattaforme avanzate permettono di usare operatori logici (come NEAR, OR, o il carattere jolly *) per filtrare esattamente dati di nostro interesse (ad esempio le cause: "sinistro stradale").
+\end{itemize}
 
+\subsection{Data Cleaning e Anonimizzazione}
+Il testo appena scaricato è "\textbf{sporco}". Contiene giustamente informazioni ridondanti come intestazioni ripetitive, numeri di pagina o tag HTML se preso direttamente dal web. La fase di Data Cleaning, ossia pulizia dei dati, prevede l'uso di \textbf{Espressioni Regolari REGEX} in Python per:
+\begin{itemize}
+    \item Rimuovere punteggiatura inutile o caratteri speciali.
+
+    \item Uniformare il testo (fase importante: ad es. trasformare tutto il testo in minuscolo per non far credere alla macchina che "Danno" e "danno" siano due parole diverse.
+
+    \item Rimuovere le cosiddette \textit{Stop-Words} (congiunzioni, articoli, preposizioni che non aggiungono significato logico alla frase, anche se con gli LLM moderni questo passaggio a volte si salta).
+\end{itemize}
+Tuttavia non sempre i dataset pubblici, o comunque quelli utilizzabili, sono del tutto \textbf{anonimizzati}. Prima di procedere con tutto il lavoro è importante capire che, stando al GDPR\footnote{\textbf{G}eneral \textbf{D}ata \textbf{P}rotection\textbf{ R}egulation - Regolamento UE 2016/679):è la normativa europea sulla privacy, in vigore dal 25 maggio 2018, che disciplina il trattamento dei dati personali, garantendo maggiore controllo alle persone fisiche e sanzioni severe per le aziende (fino al 4\% del fatturato globale) in caso di violazione.}, trattare documenti legali espone a enormi rischi di privacy, poiché le sentenze contengono Dati Personali come nomi, indirizzi e dati sanitari. Prima di usare questi dati per addestrare un'IA, devono essere anonimizzati.
+Esistono due vie:
+\begin{itemize}
+    \item \textbf{A monte:} Piattaforme (come Diritto Pratico) che hannog già applicato un processo di anonimizzazione, semplificando il lavoro del ricercatore.
+
+    \item \textbf{A valle:} Se i dati sono in chiaro, chi vuole usare il dataset deve creare prima un modello di IA basato sulla \textit{Named Entity Recognition NER} che trovi i nomi propri e li sostituisca con etichette fittizzie (es. "Il Sig. Mario Rossi" diventa "Il Sig. [ATTORE]").
+    
+\end{itemize}
+
+\subsection{Estrazione delle Feature $X$ e delle Label $Y$}
+Abbiamo capito come poter estrarre dati da un dataset, i metodi e i problemi che possono incorrere. Adesso che abbiamo dati fondamentalemente \textit{grezzi} cosa facciamo? La trasformazione di un documento testuale non strutturato (la sentenza grezza) in un set di dati supervisionato richiede un partizionamento logico rigoroso. In questa fase, l'obiettivo architetturale è isolare le variabili indipendenti (le feature predittive, $X$) dalla variabile dipendente (il target o \textit{ground truth, $y$}). Questo partizionamento nel nostro esempio sfrutta la struttura formale tipica del provvedimento giurisdizionale.
+
+\begin{itemize}
+    \item Il problema del \textbf{Target Leakage (Fuga di dati)}: Il rischio metodologico più grave in questa fase è il cosiddetto \textit{Target Leakage}. Se il modello durante la fase di addestramento, riceve in input porzioni di testo che contengono (o implicano direttamente) la decisione finale del giudice, apprenderà una \textbf{mappatura banale} e tautologica. L'algoritmo sembrerà raggiungere un'accuratezza rasente il 100\% in fase di test, ma si rivelerà totalmente incapace di generalizzare su nuove cause (dove la decisione non è ancora stata scritta). Per evitare ciò, è imperativo che l'estrazione della variabile \textit{X} si interrompa rigorosamente prima della sezione dispositiva.
+
+    \item \textbf{L'Estrazione del Target ($y$) tramite euristiche}: La variabile dipendente $y$, nel nostro esempio la decisione reale del giudice, viene estratta solitamente tramite \textit{parser} basati su Espressioni Regolari (\textbf{REGEX}) o regole euristiche.
+    \begin{enumerate}
+        \item \textbf{Individuazione del Dispositivo:} Il parser scansiona il documento alla ricerca di ancore testuali standardizzate, tipicamente l'acronimo "\textbf{P.Q.M.}" (Per Questi Motivi) o formule equivalenti\footnote{Il tribunale, \textit{definitivamente pronunciando...}}.
+
+        \item \textbf{Mappatura della Ground Truth}: Una volta isolato il testo \textbf{successivo} al \textit{P.Q.M}, algoritmi di \textit{pattern matching o modelli NLP leggeri} analizzano i verbi chiave per mappare l'esito in uno \textbf{spazio vettoriale discreto}\footnote{Nel machine learning, uno spazio vettoriale discreto si riferisce a un contesto in cui i dati non sono continui (come i numeri reali), ma provengono da un insieme numerabile, finito o discreto (come numeri interi, categorie, o token di testo).}. Ad esempio, nel caso di una Classificazione Binaria, occorrenze di lemmi come \textit{rigetta,respinge o dichiara inammissibile} forzano la variabile $y$ al valore 0 (Classe Negativa). Occorrenze di lemmi come \textit{accoglie, condanna o dichiara tenuto} mappano la variabile $y$ al valore 1 (Classe Positiva).
+    \end{enumerate}
+
+\item \textbf{L'estrazione delle Feature Predittive ($X$)}: Tutto ciò che viene prima del \textit{P.Q.M.} costituisce il dominio delle feature \textit{X}. Questa sezione comprende l'intestazione, lo \textit{"Svolgimento del processo"} (i fatti storici e le pretese delle parti) e i "Motivi della decisione" (l'iter logico-giuridico). Questo blocco testuale ripulito rappresenta lo \textit{stato di coscienza} che un ipotetico giudice artificiale possiede prima di emettere la sentenza.
+\end{itemize}
+
+\subsection{Serializzazione e Strutturazione Finale del Dataset}
+L'output della fase di parsing deve essere consolidato in una struttura dati che sia computazionalmente efficiente e direttamente digeribile dai framework di ML (come \textit{Scikit-Learn} o Deep Learning (come \textit{PyTorch o TensorFlow}. Questa transizione è nota come \textbf{Serializzazione}.
+\begin{itemize}
+    \item Formati di Serializzazione:\\
+    I dati estratti e accoppiati in tuple ($x_i$, $y_i$) vengonon tipicamente serializzati in formati tabellari o gerarchici:
+    \begin{itemize}
+         \item \textbf{CSV (Comma-Separated Values)}: Standard de facto per i modelli di Machine Learning Classici. La struttura risultante è una matrice in cui ogni riga (record) rappresenta un singolo caso giurisprudenziale e le colonne rappresentano gli attributi (es. \textit{IDSentenza, TestoFattiX, DecisioneY}).
+
+        \item \textbf{JSON O JSONL (lines)}: Formati preferenziali quando si opera con i LLMs. Il formato JSONL, in particolare, permette di salvare ogni istanza come un oggetto JSON indipendente su una singola riga, ottimizzando il caricamento in memoria (steaming) di dataset composti da gigabytye di testo, essenziale per il fine-tuning di modelli generativi.
+    \end{itemize}
+\item \textbf{Data Validation e Analisi Esplorativa (EDA)}: Prima di considerare la pipeline conclusa, il dataset strutturato viene caricato in memoria (tipicamente istanziando un oggetto \textit{DataFrame} tramite la libreria \textit{Pandas} in Python) per la validazione topologica e statistica:
+\begin{enumerate}
+    \item \textbf{Gestione dei dati mancanti (Missing Values):} Si identificano e si scartano i record in cui il parser ha fallito l'estrazione (es. i documenti dove la sigla \textit{P.Q.M} è assente).
+
+    \item \textbf{Analisi dello Sbilanciamento delle Classi (Class Imbalance)}: Si caocla la distribuzione di frequenza della variabile $y$. Nel dominio giuridico, è frequente riscontrare dataset fortemente sbilanciati (ad esempio 85\% di ricorsi respinti e 15\% accolti). Identificare questo bias statistico in questa fase è vitale, in quanto richiederà successivamente l'adozione di tecniche di compensazione matematica (come l'assegnazione di pesi diverse alle classi nella \textit{Loss Function} o tecniche di sovracampionamento come la \textit{SMOTE}).
+\end{enumerate}
+\end{itemize}
+Dopop tutta questa \textit{catena di montaggio} il dataset può essere considerato la \textbf{Ground Truth} affidabile su cui eseguire lo \textit{splitting} (Train/Validation/Test SET) e avviare l calcolo tensoriale dell'addestramento.
 \end{document}
