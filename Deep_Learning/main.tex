@@ -1,0 +1,88 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+
+\title{Deep Learning}
+\author{Alessio Virgillito}
+\date{March 2026}
+\usepackage[italian]{babel}
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Preambolo}
+Il seguente documento è stato prodotto con lo scopo di introdurre i concetti basilari della disciplina Deep Learning e vari aspetti legati al mondo delle reti neurali. Lo scopo dei seguenti appunti è puramente didattico e mirato alla costruzione di una Tesi Sperimentale di Primo Livello (Laurea Triennale in Informatica). L'argomento della Tesi mira all'impiego di soluzioni tramite ML (Machine Learning), DL (Deep Learning), LLM (Large Language Model) e AI al mondo giuridico, della sentenza e delle scelte di un giudice artificiale su un caso reale. Per questo motivo gli esempi introdotti sono tutti legati a questo argomento.
+\section{Introduzione al Deep Learning}
+\subsection{L'apprendimento delle Rappresentazioni}
+Nel Machine Learning classico, l'algoritmo (es. Regressione Logistica) è molto efficiente, ma ha un limite strutturale noto come \textbf{dipendenza dalla Feature Engineering}. Nel solito esempio giuridico e visto ampiamente nel documento introduttivo al Machine Learning, dovevamo dire noi alla macchina quali variabili guardare: "giorni di prognosi", "età", "presenza di testimoni". Con dati strutturati (tabelle), il Machine Learning classico funzione perfettamente. Tuttavia, le sentenze legali sono \textbf{dati non strutturati}. Sono blocchi di testo grezzo in linguaggio naturale. Costruire manualmente delle feature per ogni singola sfumatura linguistica di un testo giuridico è computazionalmente è computazionalmente e umanamente impossibile.
+\\
+E' qui che entra in gioco il \textbf{Deep Learning}!. Secondo la definizione formale di \textit{IBM}, il Deep Learning è un sottoinsieme del Machine Learning basato su \textbf{Reti Neurali Artificiali (ANN)} composte da diversi strati chiamati \textbf{\textit{layer}}. La vera rivoluzione del DL è la cosiddetta \textbf{Rapresentazion Learning.} Invece di richiedere ad un umano di estrarre le feature (es. contare quante volte compare la parola "colpa"), una rete neurale profonda prende in input il dato grezzo.
+\\
+Attraverso i suoi strati nascosti (\textbf{Hidden Layers)}, la rete impara da sola a estrarre le caratteristiche gerarchiche più utili per risolvere il problema. I primi strati imparano concetti semplici (es. la sintassi di base), mentre gli strati più profondi combinano questi concetti per capire astrazioni complesse (es. la correlazione tra un articolo di legge e l'esito della sentenza).
+\\
+In breve, potremmo vedere il DL come l'automazione dell'estrazione delle feature nel ML.
+
+\section{Anatomia di una rete neurale}
+Le reti neurali in generale sono ispirate al funzionamento dei circuiti neurali del cervello umano, guidato dalla complessa trasmissione di segnali attraverso reti distribuite. Nel DL, i \textit{segnali} analoghi sono gli output ponderati di molte operazioni annidate, ciascuna eseguita da un \textit{neuore} (o nodo) artificiale, che costituiscono colletivamente la rete neurale.
+\\
+Per comprendere la topologia di questa architettura, dobbiamo analizzarne i singoli layer e i calcoli tensoriali che avvengono al loro interno.
+\subsection{I Nodi, i Pesi e i Bias (i Parametri del Modello)}
+Ogni rete neurale artificiale comprende strati interconnessi di \textit{neuroni}, dove ogni connessione da neurone a neurone viene moltiplicata per un peso unico, il quale amplifica (o riduce) l'influenza di ciascuna connessione. Vediamola come una sorta di lunga catena, l'input fornito a ciascun neurone può essere inteso come la somma ponderata degli output di ciascun neurone nel livello precedente, a cui di solito viene aggiunto anche un termine di bias univoco. Durante la fase di \textbf{Addestramento}, la rete neurale \textit{"impara"} attraverso aggiustamenti a ciascuno di questi pesi e termini di distorsione (bias) per produrre output più accurati. Questi elementi costituiscono \textbf{i parametri} del modello. Quando, ad esempio, si legge di un modello linguistico di grandi dimensioni (LLM) con miliardi di "parametri", quel numero riflette l'esatta quantità di connessioni ponderate e bias specifici presenti nella rete.
+\\
+Ognuno di questi nodi artificiali esegue una propria operazione matematica chiamata \textbf{"funzione di attivazione"}. L'output della funzione di attivazione di ogni nodo contribuisce in parte all'input fornito a ciascuno dei nodi del livello successivo.
+\subsection{Il ruolo delle Funzioni di Attivazione}
+Come visto dunque, le funzioni di attivazione sono componenenti fondamentali delle reti neurali artificiali. Esse sono responsabili della cosiddetta \textbf{\textit{non-linearità}} del modello, permettendo così di apprendere relazioni complesse. Esse sono direttamente legate al \textit{\textbf{Teorema dell'Approsimazione Universale}}\footnote{Tramite le funzioni sopra-citate ma non approfondite, può approssimare qualsiasi funzione continua su sottoinsiemi compatti di $R^n$ con un grado di precisione arbitrario. Garantisce che le reti neurali siano strumenti computazionali universali.}, che afferma la capacità di una rete neurale con un numero sufficiente di neuroni di approssimare quasi ogni \textit{funzione continua}.
+\\
+E' essenziale, al fine di capire il vero vantaggio del DL, che senza queste funzioni, una rete neurale per quanto profonda, si comporterebbe come un semplice modello lineare, limitando drasticamente le sua capacità espressive, neutralizzando lo scopo stesso del DL.
+\\
+Non vengono approfonditi nel seguente documento i tipi di funzioni (ReLU, tanh, GELU \& SiLU).
+\\
+\\
+\\
+\subsection{Hidden Layers}
+Gli Hidden Layers nel DL sono i livelli di una rete neurale posizionati tra lo strato di input (ingresso) e quello di output (uscita). Essi sono fondamentali perché elaborano le informazioni, trasformando i dati grezzi in rappresentazioni sempre più astratte e complesse. Il nome "Deep" deriva proprio dal fatto che questi modelli contengono \textit{molteplici} hidden layer, non solo uno, permettendo una capacità di apprendimento gerarchico.
+\\
+I livelli intermedi sono quelli in cui avviene la maggior parte dell'apprendimento.
+
+\section{Addestramento di reuti neurali e il problema dell'Interpretabilità}
+Il potenziale teorico delle reti neurali è estremamente evidente, non lo era però, nei primi anni di studi di questo nuovo mondo, il come addestrarle in modo \textit{efficiente}. L'obiettivo dell'ottimizzazione dei parametri del modello attraverso l'addestramento è ridurre l'errore degli output finali della rete, ma isolare e calcolare separatemente in che modo \textit{ciascuno} delle migliaia, se non milioni o miliardi, di pesi interconnessi di una rete neurale ha contribuito all'errore complessivo è del tutto impraticabile. Questo ostacolo è stato superato con l'introduzione di due algoritmi essenziali: la \textbf{retropropagazione} e la \textbf{discesa del gradiente} (quest'ultimo già approfondito nel documento sul Machine Learning!).
+
+\subsection{La Retropropagazione}
+La \textbf{retropropagazione} dell'errore, è un metodo utile per calcolare in che modo le modifiche a qualsiasi peso o distorsione individuale in una rete neurale, influiranno sull'accuratezza delle previsioni del modello. Abbiamo visto nel cap. 3 come, durante l'addestramento, gli output dei neuroni di un livello fungono in parte come input per i neuroni del livello successivo e così via. Durante l'allenamento, questa serie di funzioni matematiche complesse (equazioni) interconnesse sono annidate in un'altra funzione: una \textbf{\textit{funzione di perdita}} che misura la differenza media (o "perdita") tra l'output desiderato (o "ground truth") per un dato input e l'output effettivo della rete neurale per ogni passaggio in avanti. Questo processo iterativo permette alla rete di scalare l'errore all'indietro, dall'Output Layer fino all'Input Layer, aggiornando i pesi e garantendo la convergenza del modello.
+\\
+\\
+\\
+
+\subsubsection{Funzionamento in breve}
+Una volta determinati gli iperparametri\footnote{Sono i parametri di configurazione esterni che vengono impostati \textit{manualmente} prima dell'inizio dell'addestramento e che determinano l'architettura della rete e il funzionamento del processo di apprendimento. A differenza dei pesi o bias (che vengono presi automaticamente), gli iperparametri non cambiano durante l'addestramento e influenzano direttamente la qualità e la velocità con cui il modello impara.\\\\}  iniziali del modello, l'addestramento in genere inizia con un'inizializzazione casuale dei parametri del modello. ll modello esegue stime su un batch di esempi dal set di dati di addestramento e la funzione di perdita tiene traccia dell'errore di ogni previsione. L'obiettivo dell'addestramento è quello di ottimizzare iterativamente i parametri fino a quando la perdita media non viene ridotta al di sotto di una certa soglia accettabile.\\
+Utilizzando la \textbf{regola del calcolo a catena}, la retropropagazione calcola il "gradiente" della funzione di perdita. Descrive come l'aumento o la diminuizione dell'output della funzione di attivazione di un singolo neurone influenzerà la perdita complessiva, che, per estensione, descrive come qualsiasi \textit{modifica ai pesi} per cui tali output vengono moltiplicati aumenterà o diminuirà la perdita.
+
+\section{Reti Specializzate per il Linguaggio}
+Le reti neurali standard sono inefficienti quando devono processare dati sequenziali di lunghezza variabile, come i testi delle sentenze civili. Per risolvere questo problema, l'informatica ha sviluppato due architetture specifiche per il Natural Language Processing (NLP).
+
+\subsection{Word Embedding}
+Prima che una rete neurale specializzata nel linguaggio (NLP) possa elaborare una sentenza, il testo grezzo deve essere convertito in un formato numerico calcolabile. Questa trasformazione si è evoluta nel tempo: 
+\begin{itemize}
+    \item \textbf{L'approccio obsoleto (One-Hot Encoding):} Inizialmente, ogni parola del vocabolario veniva trasformata in un vettore lunghissimo pieno di zeri, con un singolo $1$ in corrispondenza della parola specifica. 
+    \\
+    Il problema: Questo metodo crea vettori giganteschi e "sparsi" (pieni di zeri), ma soprattutto \textbf{non cattura la semantica}. Per il computer ad esempio le parole "\textit{sinistro}" e "\textit{incidente}" sarebbero vettori ortogonali, in breve totalmente scollegati.
+
+    \item \textbf{Rivoluzione Semantica (Word Embeddings)}: Nel DL moderno, le parole vengono proiettate in uno spazio vettoriale denso multidimensionale (spesso con centinaia di dimensioni). Le reti neurali imparano ad assegnare coordinate spaziali simili a parole che compaiono in contesti simili. In questo spazio matematico, il vettore delle parole \textit{sinistro} e \textit{incidente} si troveranno vicinissimi. Dunque cosa sta dietro la matematica della semantica?\\
+    \\
+    Gli Embeddings permettono di fare vere e proprie operazioni algebriche con i concetti. Un esempio molto noto nei campi di studi accademici dimostra che, sottraendo e sommando i vettori, si ottengono risultati logici:
+    \\
+    \centerline{$v_{re} - v_{uomo} + v_{donna} \approx v_{regina}$}
+    \\
+   
+\end{itemize}
+ Concettualmente, nel dominio giuridico ad esempio, l'uso degli Embeddings è ciò che permette alla rete neurale di capire che distinzioni come ad esempio: "condanna al pagamento" e "risarcimento accordato" puntano verso la stessa direzione concettuale, anche se le parole usate sono completamente diverse.
+\subsection{Reti Neurali Ricorrenti (RNN)}
+Le Reti Neuarli Ricorrenti sono state originariamente progettate per elaborare dati sequenziali o serie temporali. In una RNN, l'output di un passaggio funge da input per il calcolo per il passaggio successivo, creando una sorta di "memoria" interna (chiamata stato nascosto) che consente di mantenere una comprensione del contesto e dell'ordine.
+Tuttavia, le RNN presentano carenze matematiche fondamentali durante l'addestramento su lunghe sequenze: quando la retropropagazione viene ripetuta su troppi livelli ricorrenti, l'aggiornamento dei parametri scala in modo esponenziale, portando all'esplosione del gradiente o alla scomparsa degli stessi. Questo introduce instabilità e limita pesantemente le RNN all'elaborazione di sequenze di testo relativamente brevi.
+
+\subsection{Modelli Transformer}
+Come le RNN, i modelli trasformativi\footnote{Introdotti per la prima volta in un articolo di Google DeepMind del 2017 intitolato: "\textit{Attention is all you need}", sono stati uno spartiacque nel deep learning che ha portato direttamente all'attuale era dell'IA generativa.} lavorano con dati sequenziali, ma a differenza di esse, non utilizzano livelli ricorrenti; l'architettura trasformativa utilizza solo livelli di attenzione e livelli \textit{feedforward}.
+\\
+La loro caratteristica fondamentale è il \textbf{meccanismo di auto-attenzione} (Self-Attention), che permette loro di rilevare le relazioni tra ogni singola parte di una sequenza di input. Ancora più importante, questo meccanismo consente ai Transformer di concentrarsi selettivamente sulle parti di una sequenza di testo che risultano più rilevanti in un determinato momento computazionale. E' esattamente questa architettura, priva dei colli di bottiglia matematici delle RN, a costituire il fondamento dei moderni LLM\footnote{Per approfondimento documento: LLMs.pdf}.
+\end{document}
